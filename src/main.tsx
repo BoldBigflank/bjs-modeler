@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
+import 'semantic-ui-css/semantic.min.css';
 
 import App from './app/app';
 
