@@ -1,34 +1,36 @@
 import React, { ReactElement } from 'react'
-import { Button, Icon, Accordion, List } from 'semantic-ui-react'
-import BoxListItem from './BoxListItem'
+import { Button, Icon, List } from 'semantic-ui-react'
 import { Shape, BoxShape } from '../Types'
 
 interface ShapeListProps {
     shapes: Shape[]
-    activeIndex: number
+    activeId: number
     deleteShape: (id: number) => void
-    setActiveIndex: (index: number) => void
+    setActiveId: (index: number) => void
 }
 
-function ShapeList({ shapes, activeIndex, setActiveIndex: setActiveIndex, deleteShape }: ShapeListProps) {
+function ShapeList({ shapes, activeId, setActiveId: setActiveId, deleteShape }: ShapeListProps) {
     const items = shapes.map((child, index) => {
         let content: ReactElement|null = null
         let icon: string = child.type || 'arrow'
         content = (
             <div>
                 {child.type} - {child.name}
+                <Button compact floated='right' icon onClick={() => deleteShape(index)}>
+                    <Icon name="trash" />
+                </Button>
             </div>
         )
         if (child.type === 'box') {
             icon = 'cube'
         }
         const handleItemClick = () => {
-            if (activeIndex === index) setActiveIndex(-1)
-            else setActiveIndex(index)
+            if (activeId === child.id) setActiveId(-1)
+            else setActiveId(child.id)
         }
         return (
             <List.Item 
-                active={index===activeIndex}
+                active={child.id===activeId}
                 key={index}
                 icon={icon}
                 content={content} 

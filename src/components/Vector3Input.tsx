@@ -5,11 +5,10 @@ import { Vector3 } from '../Types'
 interface Vector3InputProps {
     vec: Vector3
     name: string
-    onChange: (event:React.FormEvent<HTMLInputElement>) => void
+    updateShape: (key: string, value: any) => void
 }
 
-// Needs a name and an onchange prop
-function Vector3Input({vec, name, onChange}: Vector3InputProps) {
+function Vector3Input({vec, name, updateShape}: Vector3InputProps) {
     const [x, setX] = useState<number>(vec.x)
     const [y, setY] = useState<number>(vec.y)
     const [z, setZ] = useState<number>(vec.z)
@@ -17,6 +16,7 @@ function Vector3Input({vec, name, onChange}: Vector3InputProps) {
     const handleChange = (stateVar: Dispatch<number>, val: string) => {
         if (isNaN(parseFloat(val))) return
         stateVar(parseFloat(val))
+        updateShape(name, {x, y, z})
     }
 
     return (

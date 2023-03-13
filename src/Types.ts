@@ -6,6 +6,7 @@ export interface Vector3 {
 }
 
 export interface Shape {
+    id: number
     type: string
     name: string
     position: Vector3
