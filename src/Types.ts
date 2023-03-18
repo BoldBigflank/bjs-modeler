@@ -5,6 +5,8 @@ export interface Vector3 {
     z: number
 }
 
+export type Vector3Name = 'position' | 'rotation' | 'scaling'
+
 export interface Shape {
     id: number
     type: string

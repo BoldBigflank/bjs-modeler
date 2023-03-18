@@ -5,46 +5,38 @@ import Renderer from '../components/Renderer'
 import { Shape } from '../Types'
 import './app.module.scss';
 import ShapeDetail from 'src/components/ShapeDetail'
+import { useStoreState, useStoreActions } from '../store';
 
 
 function App() {
-  const [shapeList, setShapeList] = useState<Shape[]>([])
+  const { shapes } = useStoreState((state) => state)
   const [activeId, setActiveId] = useState(-1)
   const [lastId, setLastId] = useState(0)
+  const { addShape } = useStoreActions((actions) => actions);
 
   const addBox = () => {
     const nextId = lastId + 1
     setLastId(nextId)
-    setShapeList([
-      ...shapeList,
-      {
-        id: nextId,
-        type: 'box',
-        name: 'alex',
-        position: {
-          x: Math.floor(Math.random() * 1000) / 100 - 5,
-          y: Math.floor(Math.random() * 1000) / 100,
-          z: Math.floor(Math.random() * 1000) / 100 - 5
-        }
+    addShape({
+      id: nextId,
+      type: 'box',
+      name: 'alex',
+      position: {
+        x: Math.floor(Math.random() * 1000) / 100 - 5,
+        y: Math.floor(Math.random() * 1000) / 100,
+        z: Math.floor(Math.random() * 1000) / 100 - 5
       }
-    ])
+    })
   }
 
   function updateShape(name: string, value: any) {
-    const newShapeList: Shape[] = shapeList.map((shape) => {
+    const newShapeList: Shape[] = shapes.map((shape) => {
       if (shape.id !== activeId) return shape
       const newShape = {...shape}
       newShape[name] = value
       return newShape
     })
     if (newShapeList) setShapeList(newShapeList)
-  }
-
-  function deleteShape(id: number) {
-    // eslint-disable-next-line no-restricted-globals
-    const confirmed = confirm('Are you sure?')
-    if (!confirmed) return
-    setShapeList(shapeList.filter((shape, index) => index !== id))
   }
 
   return (
@@ -58,9 +50,8 @@ function App() {
             <div>A toolbar (Save, Load, Export)</div>
             <div> The list of objects
               <ShapeList 
-                shapes={shapeList}
+                shapes={shapes}
                 activeId={activeId}
-                deleteShape={deleteShape}
                 setActiveId={setActiveId}
               />
               <Button
@@ -75,13 +66,11 @@ function App() {
             <div>The JSON</div>
           </Grid.Column>
           <Grid.Column width={8}>
-            <Renderer shapes={shapeList} />
+            <Renderer shapes={shapes} />
             <div>View buttons</div>
           </Grid.Column>
           <Grid.Column width={4}>
-            { activeId !== -1 &&
-              <ShapeDetail shape={shapeList.find(c => c.id == activeId)} updateShape={updateShape}/>
-            }
+            <ShapeDetail shapeId={activeId} />
           </Grid.Column>
         </Grid.Row>
       </Grid>

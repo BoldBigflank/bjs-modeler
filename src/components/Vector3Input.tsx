@@ -1,23 +1,42 @@
-import React, { useState, Dispatch } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Input, Accordion } from 'semantic-ui-react'
 import { Vector3 } from '../Types'
 
 interface Vector3InputProps {
     vec: Vector3
     name: string
-    updateShape: (key: string, value: any) => void
+    onChanged: (value: Vector3) => void
 }
 
-function Vector3Input({vec, name, updateShape}: Vector3InputProps) {
-    const [x, setX] = useState<number>(vec.x)
-    const [y, setY] = useState<number>(vec.y)
-    const [z, setZ] = useState<number>(vec.z)
+function Vector3Input({vec, name, onChanged}: Vector3InputProps) {
+    const [x, setX] = useState<string>(`${vec.x}`)
+    const [y, setY] = useState<string>(`${vec.y}`)
+    const [z, setZ] = useState<string>(`${vec.z}`)
     
-    const handleChange = (stateVar: Dispatch<number>, val: string) => {
-        if (isNaN(parseFloat(val))) return
-        stateVar(parseFloat(val))
-        updateShape(name, {x, y, z})
+    const handleOnBlur = () => {
+        if (isNaN(parseFloat(x))) setX(`${vec.x}`)
+        if (isNaN(parseFloat(y))) setX(`${vec.y}`)
+        if (isNaN(parseFloat(z))) setX(`${vec.z}`)
     }
+
+    const blurOnEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') handleOnBlur()
+    }
+
+    // Changes coming from parent
+    useEffect(() => {
+        setX(`${vec.x}`)
+        setY(`${vec.y}`)
+        setZ(`${vec.z}`)
+    }, [vec])
+
+    // Changes coming from user input
+    useEffect(() => {
+        if (isNaN(parseFloat(x))) return
+        if (isNaN(parseFloat(y))) return
+        if (isNaN(parseFloat(z))) return
+        onChanged({x: parseFloat(x), y: parseFloat(y), z: parseFloat(z)})
+    }, [x, y, z])
 
     return (
         <Accordion
@@ -31,19 +50,25 @@ function Vector3Input({vec, name, updateShape}: Vector3InputProps) {
                         <Input
                             label='x'
                             value={x}
-                            onChange={(e) => handleChange(setX, e.target.value)}
+                            onKeyDown={blurOnEnter}
+                            onChange={(e) => setX(e.target.value)}
+                            onBlur={handleOnBlur}
                             fluid
                         />
                         <Input
                             label='y'
                             value={y}
-                            onChange={(e) => handleChange(setY, e.target.value)}
+                            onKeyDown={blurOnEnter}
+                            onChange={(e) => setY(e.target.value)}
+                            onBlur={handleOnBlur}
                             fluid
                         />
                         <Input
                             label='z'
                             value={z}
-                            onChange={(e) => handleChange(setZ, e.target.value)}
+                            onKeyDown={blurOnEnter}
+                            onChange={(e) => setZ(e.target.value)}
+                            onBlur={handleOnBlur}
                             fluid
                         />
                         </div>

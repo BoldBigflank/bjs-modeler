@@ -4,11 +4,16 @@ import 'semantic-ui-css/semantic.min.css';
 
 import App from './app/app';
 
+import store from './store'
+import { StoreProvider } from 'easy-peasy';
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <StrictMode>
-    <App />
+    <StoreProvider store={store}>
+      <App />
+    </StoreProvider>
   </StrictMode>
 );

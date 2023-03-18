@@ -1,22 +1,30 @@
 import React, { ReactElement } from 'react'
 import { Button, Icon, List } from 'semantic-ui-react'
-import { Shape, BoxShape } from '../Types'
+import { Shape } from '../Types'
+import { useStoreState, useStoreActions } from '../store';
+
 
 interface ShapeListProps {
-    shapes: Shape[]
     activeId: number
-    deleteShape: (id: number) => void
     setActiveId: (index: number) => void
 }
 
-function ShapeList({ shapes, activeId, setActiveId: setActiveId, deleteShape }: ShapeListProps) {
+function ShapeList({ activeId, setActiveId: setActiveId }: ShapeListProps) {
+    const { shapes } = useStoreState((state) => state)
+    const { removeShape } = useStoreActions((actions) => actions);
+
+    const onDeleteClick = (child: Shape) => {
+        const confirmed = confirm(`Are you sure you want to delete ${child.name}?`)
+        if (confirmed) removeShape(child)
+    }
+
     const items = shapes.map((child, index) => {
         let content: ReactElement|null = null
         let icon: string = child.type || 'arrow'
         content = (
             <div>
-                {child.type} - {child.name}
-                <Button compact floated='right' icon onClick={() => deleteShape(index)}>
+                {child.id}: {child.type} - {child.name}
+                <Button compact floated='right' icon onClick={() => onDeleteClick(child)}>
                     <Icon name="trash" />
                 </Button>
             </div>
