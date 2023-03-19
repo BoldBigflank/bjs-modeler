@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import * as BABYLON from '@babylonjs/core/Legacy/legacy';
-import { CreateBox } from '../utilities/RenderUtil'
+import { CreateBox, CreateSphere } from '../utilities/RenderUtil'
 import { Shape, BoxShape } from '../Types'
 
 interface RendererProps {
@@ -43,6 +43,11 @@ function Renderer({ shapes }: RendererProps) {
                 const box = CreateBox(shape as BoxShape, scene.current)
                 sceneObjects.current.push(box)
             }
+            if (shape.type === 'sphere') {
+                const mesh = CreateSphere(shape as SphereShape, scene.current)
+                sceneObjects.current.push(mesh)
+            }
+            
             // If it's selected, shape.showBoundingBox = true;
         })
 

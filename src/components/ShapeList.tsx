@@ -9,6 +9,11 @@ interface ShapeListProps {
     setActiveId: (index: number) => void
 }
 
+const iconForType: Record<string,string> = {
+    box: 'cube',
+    sphere: 'circle',
+}
+
 function ShapeList({ activeId, setActiveId: setActiveId }: ShapeListProps) {
     const { shapes } = useStoreState((state) => state)
     const { removeShape } = useStoreActions((actions) => actions);
@@ -20,7 +25,7 @@ function ShapeList({ activeId, setActiveId: setActiveId }: ShapeListProps) {
 
     const items = shapes.map((child, index) => {
         let content: ReactElement|null = null
-        let icon: string = child.type || 'arrow'
+        const icon = iconForType[child.type] || 'arrow'
         content = (
             <div>
                 {child.id}: {child.type} - {child.name}
@@ -29,9 +34,6 @@ function ShapeList({ activeId, setActiveId: setActiveId }: ShapeListProps) {
                 </Button>
             </div>
         )
-        if (child.type === 'box') {
-            icon = 'cube'
-        }
         const handleItemClick = () => {
             if (activeId === child.id) setActiveId(-1)
             else setActiveId(child.id)

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Grid, Icon } from 'semantic-ui-react'
 import ShapeList from '../components/ShapeList'
 import Renderer from '../components/Renderer'
-import { Shape } from '../Types'
+import { Shape, BoxShape, SphereShape } from '../Types'
 import './app.module.scss';
 import ShapeDetail from 'src/components/ShapeDetail'
 import { useStoreState, useStoreActions } from '../store';
@@ -14,11 +14,16 @@ function App() {
   const [lastId, setLastId] = useState(0)
   const { addShape } = useStoreActions((actions) => actions);
 
-  const addBox = () => {
+  const getNextId = () => {
     const nextId = lastId + 1
     setLastId(nextId)
+    return nextId
+  }
+
+  const addBox = () => {
+    const id = getNextId()
     addShape({
-      id: nextId,
+      id,
       type: 'box',
       name: 'alex',
       position: {
@@ -26,6 +31,21 @@ function App() {
         y: Math.floor(Math.random() * 1000) / 100,
         z: Math.floor(Math.random() * 1000) / 100 - 5
       }
+    })
+  }
+
+  const addSphere = () => {
+    const id = getNextId()
+    addShape({
+      id,
+      type: 'sphere',
+      name: 'kevin',
+      position: {
+        x: Math.floor(Math.random() * 1000) / 100 - 5,
+        y: Math.floor(Math.random() * 1000) / 100,
+        z: Math.floor(Math.random() * 1000) / 100 - 5
+      },
+      diameter: 1
     })
   }
 
@@ -59,6 +79,13 @@ function App() {
                 labelPosition='right'
                 onClick={addBox}>
                 Box
+                <Icon name='plus' />
+              </Button>
+              <Button
+                icon
+                labelPosition='right'
+                onClick={addSphere}>
+                Sphere
                 <Icon name='plus' />
               </Button>
             </div>

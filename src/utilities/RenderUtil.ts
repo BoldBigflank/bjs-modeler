@@ -1,4 +1,4 @@
-import { Shape, BoxShape } from '../Types'
+import { Shape, BoxShape, SphereShape } from '../Types'
 import * as BABYLON from '@babylonjs/core/Legacy/legacy';
 
 export const RenderMeshJSON = (json: string, scene: BABYLON.Scene) => {
@@ -7,15 +7,22 @@ export const RenderMeshJSON = (json: string, scene: BABYLON.Scene) => {
 
 export const RenderMeshes = (meshes: Shape[], scene: BABYLON.Scene) => {
     meshes.forEach((mesh, i) => {
-        if (mesh.type === 'box') {
-            CreateBox(mesh as BoxShape, scene)
+        switch(mesh.type) {
+            case 'box':
+                CreateBox(mesh as BoxShape, scene)
+                break
+            case 'sphere':
+                CreateSphere(mesh as SphereShape, scene)
+                break
+            // The rest of the shapes
+            default:
+                break
         }
-        // The rest of the shapes
-
     })
 }
 
 export const CreateBox = ({ 
+        id,
         name,
         type,
         position,
@@ -26,26 +33,57 @@ export const CreateBox = ({
         depth,
         size
     }: BoxShape, scene: BABYLON.Scene|null): BABYLON.Mesh => {
-        const boxProps: BoxShape = {
+        const boxOptions: BoxShape = {
+            id,
             name,
             type,
             position,
             wrap: true
         }
-        if (height !== undefined) boxProps.height = height
-        if (width !== undefined) boxProps.width = width
-        if (depth !== undefined) boxProps.depth = depth
-        if (size !== undefined) boxProps.size = size
+        if (height !== undefined) boxOptions.height = height
+        if (width !== undefined) boxOptions.width = width
+        if (depth !== undefined) boxOptions.depth = depth
+        if (size !== undefined) boxOptions.size = size
 
-    const box = BABYLON.MeshBuilder.CreateBox(name, boxProps, scene)
+    const mesh = BABYLON.MeshBuilder.CreateBox(name, boxOptions, scene)
     if (position) {
-        box.position = new BABYLON.Vector3(position.x, position.y, position.z)
+        mesh.position = new BABYLON.Vector3(position.x, position.y, position.z)
     }
     if (rotation) {
-        box.rotation = new BABYLON.Vector3(rotation.x, rotation.y, rotation.z)
+        mesh.rotation = new BABYLON.Vector3(rotation.x, rotation.y, rotation.z)
     }
     if (scaling)  {
-        box.scaling = new BABYLON.Vector3(scaling.x, scaling.y, scaling.z)
+        mesh.scaling = new BABYLON.Vector3(scaling.x, scaling.y, scaling.z)
     }
-    return box
+    return mesh
+}
+
+export const CreateSphere = ({ 
+    id,
+    name,
+    type,
+    position,
+    rotation,
+    scaling,
+    diameter
+}: SphereShape, scene: BABYLON.Scene|null): BABYLON.Mesh => {
+    const sphereOptions: SphereShape = {
+        id,
+        name,
+        type,
+        position
+    }
+    if (diameter !== undefined) sphereOptions.diameter = diameter
+
+const mesh = BABYLON.MeshBuilder.CreateSphere(name, sphereOptions, scene)
+if (position) {
+    mesh.position = new BABYLON.Vector3(position.x, position.y, position.z)
+}
+if (rotation) {
+    mesh.rotation = new BABYLON.Vector3(rotation.x, rotation.y, rotation.z)
+}
+if (scaling)  {
+    mesh.scaling = new BABYLON.Vector3(scaling.x, scaling.y, scaling.z)
+}
+return mesh
 }
