@@ -29,9 +29,17 @@ export interface BoxShape extends Shape {
 export interface SphereShape extends Shape {
     type: 'sphere'
     diameter?: number
+    diameterX?: number
+    diameterY?: number
+    diameterZ?: number
+    segments?: number
+    arc?: number
+    slice?: number
+    updatable?: boolean
+    sideOrientation?: number
 }
 
-
+export type AllShapes = BoxShape | SphereShape
 // export interface Jar {
 //     orientation: number
 //     mesh: InteractiveMesh

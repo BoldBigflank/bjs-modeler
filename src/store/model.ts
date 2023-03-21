@@ -1,4 +1,4 @@
-import type { Shape } from '../Types'
+import type { Shape, AllShapes } from '../Types'
 
 import {
     action,
@@ -13,17 +13,17 @@ import {
   
   
   export interface ShapesModel {
-    shapes: Shape[];
+    shapes: AllShapes[];
   
-    completedShapes: Computed<this, Shape[]>;
-    remainingShapes: Computed<this, Shape[]>;
+    // completedShapes: Computed<this, Shape[]>;
+    // remainingShapes: Computed<this, Shape[]>;
   
-    addShape: Action<this, Shape>;
-    updateShape: Action<this, Shape>;
-    removeShape: Action<this, Shape>;
+    addShape: Action<this, AllShapes>;
+    updateShape: Action<this, AllShapes>;
+    removeShape: Action<this, AllShapes>;
   
     onShapesChanged: ThunkOn<this>;
-    saveShapes: Thunk<this, Shape[]>;
+    saveShapes: Thunk<this, AllShapes[]>;
   }
   
   const shapesStore: ShapesModel = {

@@ -30,8 +30,9 @@ function App() {
         x: Math.floor(Math.random() * 1000) / 100 - 5,
         y: Math.floor(Math.random() * 1000) / 100,
         z: Math.floor(Math.random() * 1000) / 100 - 5
-      }
-    })
+      },
+      size: 1
+    } as BoxShape)
   }
 
   const addSphere = () => {
@@ -46,7 +47,7 @@ function App() {
         z: Math.floor(Math.random() * 1000) / 100 - 5
       },
       diameter: 1
-    })
+    } as SphereShape)
   }
 
   function updateShape(name: string, value: any) {

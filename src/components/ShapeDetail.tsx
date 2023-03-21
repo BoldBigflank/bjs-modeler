@@ -1,12 +1,16 @@
 import React, { useState, useEffect, ReactElement } from 'react'
 import { Input } from 'semantic-ui-react'
 import Vector3Input from './Vector3Input'
-import { Vector3, Vector3Name } from '../Types'
+import { Shape, BoxShape, Vector3, Vector3Name, SphereShape } from '../Types'
 import { useStoreState, useStoreActions } from '../store';
 
 interface ShapeDetailProps {
     shapeId: number | undefined
 }
+
+// Type Guards
+const isBoxShape = (shape: Shape): shape is BoxShape => shape.type === 'box'
+const isSphereShape = (shape: Shape): shape is SphereShape => shape.type === 'sphere'
 
 function ShapeDetail({ shapeId }: ShapeDetailProps) {
     const { shapes } = useStoreState((state) => state)
@@ -47,6 +51,20 @@ function ShapeDetail({ shapeId }: ShapeDetailProps) {
             <Vector3Input vec={position} name="position" onChanged={(v) => onVectorChanged('position', v)} />
             <Vector3Input vec={displayRotation} name="rotation" onChanged={(v) => onVectorChanged('rotation', v)} />
             <Vector3Input vec={displayScaling} name="scaling" onChanged={(v) => onVectorChanged('scaling', v)} />
+            { isBoxShape(shape) &&
+                <Input
+                label={{content: 'Size'}}
+                value={shape.size}
+                onChange={(e) => onNameChanged(e.target.value)}
+            />
+            }
+            { isSphereShape(shape) && 
+                <Input
+                label={{content: 'Diameter'}}
+                value={shape.diameter}
+                onChange={(e) => onNameChanged(e.target.value)}
+            />
+            }
         </div>
     )
 }
