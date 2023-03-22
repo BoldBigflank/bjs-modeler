@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ReactElement } from 'react'
 import { Input } from 'semantic-ui-react'
 import Vector3Input from './Vector3Input'
-import { Shape, BoxShape, Vector3, Vector3Name, SphereShape } from '../Types'
+import { Shape, BoxShape, Vector3, Vector3Name, SphereShape, AllShapes } from '../Types'
 import { useStoreState, useStoreActions } from '../store';
 
 interface ShapeDetailProps {
@@ -22,22 +22,12 @@ function ShapeDetail({ shapeId }: ShapeDetailProps) {
 
     const displayRotation = rotation ? rotation : { x: 0, y: 0, z: 0 }
     const displayScaling = scaling ? scaling : { x: 1, y: 1, z: 1 }
-    
-    const onNameChanged = (value: string) => {
-        console.log('onShapeChanged', name, value)
+
+    const onShapeChanged = (newShapeData: Partial<AllShapes>) => {
         const newShape = {
             ...shape,
-            name: value
+            ...newShapeData
         }
-        updateShape(newShape)
-    }
-
-    const onVectorChanged = (name: Vector3Name, value: Vector3) => {
-        console.log('onVectorChanged', name, value)
-        const newShape = {
-            ...shape
-        }
-        newShape[name] = value
         updateShape(newShape)
     }
 
@@ -46,23 +36,24 @@ function ShapeDetail({ shapeId }: ShapeDetailProps) {
             <Input
                 label={{content: 'Name'}}
                 value={shape.name}
-                onChange={(e) => onNameChanged(e.target.value)}
+                onChange={(e) => onShapeChanged({name: e.target.value})}
             />
-            <Vector3Input vec={position} name="position" onChanged={(v) => onVectorChanged('position', v)} />
-            <Vector3Input vec={displayRotation} name="rotation" onChanged={(v) => onVectorChanged('rotation', v)} />
-            <Vector3Input vec={displayScaling} name="scaling" onChanged={(v) => onVectorChanged('scaling', v)} />
+            <Vector3Input vec={position} name="position" onChanged={onShapeChanged} />
+            <Vector3Input vec={displayRotation} name="rotation" onChanged={onShapeChanged} />
+            <Vector3Input vec={displayScaling} name="scaling" onChanged={onShapeChanged} />
             { isBoxShape(shape) &&
                 <Input
                 label={{content: 'Size'}}
                 value={shape.size}
-                onChange={(e) => onNameChanged(e.target.value)}
+                onChange={(e) => onShapeChanged({ size: parseFloat(e.target.value) })}
             />
             }
             { isSphereShape(shape) && 
                 <Input
                 label={{content: 'Diameter'}}
                 value={shape.diameter}
-                onChange={(e) => onNameChanged(e.target.value)}
+                onChange={(e) => onShapeChanged({ diameter: parseFloat(e.target.value) })
+            }
             />
             }
         </div>

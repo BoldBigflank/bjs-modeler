@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Input, Accordion } from 'semantic-ui-react'
-import { Vector3 } from '../Types'
+import { AllShapes, Vector3, Vector3Name } from '../Types'
 
 interface Vector3InputProps {
     vec: Vector3
-    name: string
-    onChanged: (value: Vector3) => void
+    name: Vector3Name
+    onChanged: (newShape: Partial<AllShapes>) => void
 }
 
 function Vector3Input({vec, name, onChanged}: Vector3InputProps) {
@@ -35,7 +35,13 @@ function Vector3Input({vec, name, onChanged}: Vector3InputProps) {
         if (isNaN(parseFloat(x))) return
         if (isNaN(parseFloat(y))) return
         if (isNaN(parseFloat(z))) return
-        onChanged({x: parseFloat(x), y: parseFloat(y), z: parseFloat(z)})
+        const newVec: Partial<AllShapes> = {}
+        newVec[name] = {
+            x: parseFloat(x), 
+            y: parseFloat(y), 
+            z: parseFloat(z)
+        }
+        onChanged(newVec)
     }, [x, y, z])
 
     return (
