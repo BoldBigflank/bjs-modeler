@@ -14,6 +14,12 @@ export interface Shape {
     position: Vector3
     rotation?: Vector3
     scaling?: Vector3
+    children?: AllShapes[]
+}
+
+export interface RefShape extends Shape {
+    type: 'ref'
+    ref: number
 }
 
 export interface BoxShape extends Shape {
@@ -39,7 +45,7 @@ export interface SphereShape extends Shape {
     sideOrientation?: number
 }
 
-export type AllShapes = BoxShape | SphereShape
+export type AllShapes = RefShape | BoxShape | SphereShape
 // export interface Jar {
 //     orientation: number
 //     mesh: InteractiveMesh
@@ -60,3 +66,8 @@ export type AllShapes = BoxShape | SphereShape
 //     rippleColor?: BABYLON.Color4
 //     frozen?: boolean
 // }
+
+// Type Guards
+export const isRefShape = (shape: Shape): shape is RefShape => shape.type === 'ref'
+export const isBoxShape = (shape: Shape): shape is BoxShape => shape.type === 'box'
+export const isSphereShape = (shape: Shape): shape is SphereShape => shape.type === 'sphere'

@@ -1,16 +1,12 @@
 import React, { useState, useEffect, ReactElement } from 'react'
 import { Input } from 'semantic-ui-react'
 import Vector3Input from './Vector3Input'
-import { Shape, BoxShape, Vector3, Vector3Name, SphereShape, AllShapes } from '../Types'
+import { Shape, RefShape, BoxShape, Vector3, Vector3Name, SphereShape, AllShapes, isBoxShape, isSphereShape, isRefShape } from '../Types'
 import { useStoreState, useStoreActions } from '../store';
 
 interface ShapeDetailProps {
     shapeId: number | undefined
 }
-
-// Type Guards
-const isBoxShape = (shape: Shape): shape is BoxShape => shape.type === 'box'
-const isSphereShape = (shape: Shape): shape is SphereShape => shape.type === 'sphere'
 
 function ShapeDetail({ shapeId }: ShapeDetailProps) {
     const { shapes } = useStoreState((state) => state)
@@ -24,7 +20,9 @@ function ShapeDetail({ shapeId }: ShapeDetailProps) {
     const displayScaling = scaling ? scaling : { x: 1, y: 1, z: 1 }
 
     const onShapeChanged = (newShapeData: Partial<AllShapes>) => {
-        const newShape = {
+        // TODO: Research TS object union. I think it's sad bc it's defining the
+        // fields multiple times
+        const newShape: AllShapes = {
             ...shape,
             ...newShapeData
         }
@@ -33,6 +31,7 @@ function ShapeDetail({ shapeId }: ShapeDetailProps) {
 
     return (
         <div>
+            <div>id: {shape.id}</div>
             <Input
                 label={{content: 'Name'}}
                 value={shape.name}
@@ -41,20 +40,26 @@ function ShapeDetail({ shapeId }: ShapeDetailProps) {
             <Vector3Input vec={position} name="position" onChanged={onShapeChanged} />
             <Vector3Input vec={displayRotation} name="rotation" onChanged={onShapeChanged} />
             <Vector3Input vec={displayScaling} name="scaling" onChanged={onShapeChanged} />
+            { isRefShape(shape) && 
+                <Input
+                    label={{content: 'Ref'}}
+                    value={shape.ref}
+                    onChange={(e) => onShapeChanged({ ref: parseInt(e.target.value)})}
+                />
+            }
             { isBoxShape(shape) &&
                 <Input
-                label={{content: 'Size'}}
-                value={shape.size}
-                onChange={(e) => onShapeChanged({ size: parseFloat(e.target.value) })}
-            />
+                    label={{content: 'Size'}}
+                    value={shape.size}
+                    onChange={(e) => onShapeChanged({ size: parseFloat(e.target.value) })}
+                />
             }
             { isSphereShape(shape) && 
                 <Input
-                label={{content: 'Diameter'}}
-                value={shape.diameter}
-                onChange={(e) => onShapeChanged({ diameter: parseFloat(e.target.value) })
-            }
-            />
+                    label={{content: 'Diameter'}}
+                    value={shape.diameter}
+                    onChange={(e) => onShapeChanged({ diameter: parseFloat(e.target.value) })}
+                />
             }
         </div>
     )

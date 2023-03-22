@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react'
 import * as BABYLON from '@babylonjs/core/Legacy/legacy';
 import { CreateBox, CreateSphere } from '../utilities/RenderUtil'
-import { Shape, BoxShape } from '../Types'
+import { AllShapes, BoxShape, SphereShape, RefShape, isRefShape, isBoxShape, isSphereShape } from '../Types'
 
 interface RendererProps {
-    shapes: Shape[]
+    shapes: AllShapes[]
 }
 
 function Renderer({ shapes }: RendererProps) {
@@ -30,6 +30,21 @@ function Renderer({ shapes }: RendererProps) {
         renderShapes()
     }, [shapes])
 
+    const resolveRefs = (shape: AllShapes): AllShapes => {
+        if (shape.type !== 'ref') return shape
+        if (shape.ref < 0 || isNaN(shape.ref)) return shape
+        const refShape = shapes.find((c) => c.id === shape.ref)
+        if (!refShape) return shape
+        if (refShape.id === shape.id) return shape
+        let resolvedShape = {
+            ...refShape,
+            ...shape,
+            type: refShape.type,
+        }
+        if (isRefShape(refShape)) resolvedShape.ref = refShape.ref
+        return resolveRefs(resolvedShape)
+    }
+
     const renderShapes = () => {
         if (!scene.current) return
         // Clean out old ones
@@ -39,12 +54,13 @@ function Renderer({ shapes }: RendererProps) {
         sceneObjects.current = []
         // Make new ones
         shapes.forEach((shape, i) => {
-            if (shape.type === 'box') {
-                const box = CreateBox(shape as BoxShape, scene.current)
+            let resolvedShape = resolveRefs(shape)
+            if (isBoxShape(resolvedShape)) {
+                const box = CreateBox(resolvedShape as BoxShape, scene.current)
                 sceneObjects.current.push(box)
             }
-            if (shape.type === 'sphere') {
-                const mesh = CreateSphere(shape as SphereShape, scene.current)
+            if (isSphereShape(resolvedShape)) {
+                const mesh = CreateSphere(resolvedShape as SphereShape, scene.current)
                 sceneObjects.current.push(mesh)
             }
             
@@ -77,8 +93,8 @@ function Renderer({ shapes }: RendererProps) {
         light.specular = new BABYLON.Color3(1, 1, 1);
         light.groundColor = new BABYLON.Color3(.3, .2, .1);
         
-        const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 2, segments: 32}, scene.current);
-        sphere.position.y = 1
+        // const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 2, segments: 32}, scene.current);
+        // sphere.position.y = 1
         BABYLON.MeshBuilder.CreateGround("ground", {width: 6, height: 6}, scene.current);
 
         // DEBUG

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Grid, Icon } from 'semantic-ui-react'
 import ShapeList from '../components/ShapeList'
 import Renderer from '../components/Renderer'
-import { Shape, BoxShape, SphereShape } from '../Types'
+import { Shape, BoxShape, SphereShape, AllShapes, RefShape } from '../Types'
 import './app.module.scss';
 import ShapeDetail from 'src/components/ShapeDetail'
 import { useStoreState, useStoreActions } from '../store';
@@ -50,14 +50,19 @@ function App() {
     } as SphereShape)
   }
 
-  function updateShape(name: string, value: any) {
-    const newShapeList: Shape[] = shapes.map((shape) => {
-      if (shape.id !== activeId) return shape
-      const newShape = {...shape}
-      newShape[name] = value
-      return newShape
-    })
-    if (newShapeList) setShapeList(newShapeList)
+  const addRefShape = () => {
+    const id = getNextId()
+    addShape({
+      id,
+      type: 'ref',
+      name: 'miles',
+      position: {
+        x: Math.floor(Math.random() * 1000) / 100 - 5,
+        y: Math.floor(Math.random() * 1000) / 100,
+        z: Math.floor(Math.random() * 1000) / 100 - 5
+      },
+      ref: -1
+    } as RefShape)
   }
 
   return (
@@ -87,6 +92,13 @@ function App() {
                 labelPosition='right'
                 onClick={addSphere}>
                 Sphere
+                <Icon name='plus' />
+              </Button>
+              <Button
+                icon
+                labelPosition='right'
+                onClick={addRefShape}>
+                Ref
                 <Icon name='plus' />
               </Button>
             </div>
