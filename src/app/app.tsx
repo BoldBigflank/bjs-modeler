@@ -106,7 +106,7 @@ function App() {
             <div>The JSON</div>
           </Grid.Column>
           <Grid.Column width={8}>
-            <Renderer shapes={shapes} />
+            <Renderer shapes={shapes} activeId={activeId} />
             <div>View buttons</div>
           </Grid.Column>
           <Grid.Column width={4}>

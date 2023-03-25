@@ -5,13 +5,16 @@ import { AllShapes, BoxShape, SphereShape, RefShape, isRefShape, isBoxShape, isS
 
 interface RendererProps {
     shapes: AllShapes[]
+    activeId?: number
 }
 
-function Renderer({ shapes }: RendererProps) {
+function Renderer({ shapes, activeId }: RendererProps) {
     const canvasRef = useRef(null)
     const scene = useRef<BABYLON.Scene|null>(null)
     const engine = useRef<BABYLON.Engine|null>(null)
     const sceneObjects = useRef<BABYLON.Mesh[]>([])
+    const gizmoManager = useRef<BABYLON.GizmoManager|null>(null)
+    let tempGizmoValue: number
 
     // Initial
     useEffect(() => {
@@ -56,19 +59,21 @@ function Renderer({ shapes }: RendererProps) {
         shapes.forEach((shape, i) => {
             let resolvedShape = resolveRefs(shape)
             if (isBoxShape(resolvedShape)) {
-                const box = CreateBox(resolvedShape as BoxShape, scene.current)
-                sceneObjects.current.push(box)
+                const mesh = CreateBox(resolvedShape as BoxShape, scene.current)
+                sceneObjects.current.push(mesh)
+                if (shape.id === activeId) gizmoManager.current?.attachToMesh(mesh)
             }
             if (isSphereShape(resolvedShape)) {
                 const mesh = CreateSphere(resolvedShape as SphereShape, scene.current)
                 sceneObjects.current.push(mesh)
+                if (shape.id === activeId) gizmoManager.current?.attachToMesh(mesh)
             }
             
             // If it's selected, shape.showBoundingBox = true;
         })
-
+        
         // TODO: Highlighting meshes https://doc.babylonjs.com/features/featuresDeepDive/mesh/highlightLayer
-
+        
     }
     const createScene = () => {
         if (!engine.current) {
@@ -78,12 +83,25 @@ function Renderer({ shapes }: RendererProps) {
         if (!scene.current) {
             scene.current = new BABYLON.Scene(engine.current!)
         }
+        if (!gizmoManager.current) {
+            gizmoManager.current = new BABYLON.GizmoManager(scene.current);
+            gizmoManager.current.usePointerToAttachGizmos = false;
+            gizmoManager.current.positionGizmoEnabled = true;
+            gizmoManager.current.gizmos.positionGizmo?.xGizmo.dragBehavior.onDragStartObservable.add(() => {
+                console.log('started')
+                tempGizmoValue = gizmoManager.current!.gizmos.positionGizmo!.attachedMesh!.position.x
+            })
+            gizmoManager.current.gizmos.positionGizmo?.xGizmo.dragBehavior.onDragEndObservable.add((s) => {
+                tempGizmoValue = gizmoManager.current!.gizmos.positionGizmo!.attachedMesh!.position.x - tempGizmoValue // B - A
+                console.log('ended', tempGizmoValue)
+            })
+        }
         const camera = new BABYLON.ArcRotateCamera('camera1',
-            Math.PI * 3 / 2, // a
-            Math.PI / 4, // b
-            24,
-            new BABYLON.Vector3(0, 4, 0),
-            scene.current
+        Math.PI * 3 / 2, // a
+        Math.PI / 4, // b
+        24,
+        new BABYLON.Vector3(0, 4, 0),
+        scene.current
         )
         camera.setTarget(BABYLON.Vector3.Zero())
         camera.attachControl(canvas, true)
@@ -96,9 +114,10 @@ function Renderer({ shapes }: RendererProps) {
         // const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 2, segments: 32}, scene.current);
         // sphere.position.y = 1
         BABYLON.MeshBuilder.CreateGround("ground", {width: 6, height: 6}, scene.current);
-
+        
+        
         // DEBUG
-        // scene.current.debugLayer.show();
+            // scene.current.debugLayer.show();
     }
     return (
         <canvas
