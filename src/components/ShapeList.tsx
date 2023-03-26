@@ -12,7 +12,8 @@ interface ShapeListProps {
 const iconForType: Record<string,string> = {
     box: 'cube',
     sphere: 'circle',
-    ref: 'arrow right'
+    ref: 'arrow right',
+    cylinder: 'database'
 }
 
 function ShapeList({ activeId, setActiveId: setActiveId }: ShapeListProps) {

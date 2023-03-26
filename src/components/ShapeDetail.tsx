@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ReactElement } from 'react'
 import { Input } from 'semantic-ui-react'
 import Vector3Input from './Vector3Input'
-import { Shape, RefShape, BoxShape, Vector3, Vector3Name, SphereShape, AllShapes, isBoxShape, isSphereShape, isRefShape } from '../Types'
+import { Shape, RefShape, BoxShape, Vector3, Vector3Name, SphereShape, AllShapes, isBoxShape, isSphereShape, isRefShape, isCylinderShape } from '../Types'
 import { useStoreState, useStoreActions } from '../store';
 
 interface ShapeDetailProps {
@@ -60,6 +60,30 @@ function ShapeDetail({ shapeId }: ShapeDetailProps) {
                     value={shape.diameter}
                     onChange={(e) => onShapeChanged({ diameter: parseFloat(e.target.value) })}
                 />
+            }
+            { isCylinderShape(shape) &&
+                <>
+                    <Input
+                        label={{content: 'Height'}}
+                        value={shape.height}
+                        onChange={(e) => onShapeChanged({ height: parseFloat(e.target.value) })}
+                    />
+                    <Input
+                        label={{content: 'Diameter'}}
+                        value={shape.diameter}
+                        onChange={(e) => onShapeChanged({ diameter: parseFloat(e.target.value) })}
+                    />
+                    <Input
+                        label={{content: 'Diamater Top'}}
+                        value={shape.diameterTop}
+                        onChange={(e) => onShapeChanged({ diameterTop: parseFloat(e.target.value) })}
+                    />
+                    <Input
+                        label={{content: 'Tessellation'}}
+                        value={shape.tessellation}
+                        onChange={(e) => onShapeChanged({ tessellation: parseFloat(e.target.value) })}
+                    />
+                </>
             }
         </div>
     )

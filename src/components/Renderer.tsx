@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import * as BABYLON from '@babylonjs/core/Legacy/legacy';
-import { CreateBox, CreateSphere } from '../utilities/RenderUtil'
-import { AllShapes, BoxShape, SphereShape, RefShape, isRefShape, isBoxShape, isSphereShape } from '../Types'
+import { CreateBox, CreateSphere, CreateCylinder, TexturedMaterial } from '../utilities/RenderUtil'
+import { AllShapes, BoxShape, SphereShape, CylinderShape, RefShape, isRefShape, isBoxShape, isSphereShape, isCylinderShape } from '../Types'
 
 interface RendererProps {
     shapes: AllShapes[]
@@ -57,7 +57,7 @@ function Renderer({ shapes, activeId }: RendererProps) {
         sceneObjects.current = []
         // Make new ones
         shapes.forEach((shape, i) => {
-            let resolvedShape = resolveRefs(shape)
+            const resolvedShape = resolveRefs(shape)
             if (isBoxShape(resolvedShape)) {
                 const mesh = CreateBox(resolvedShape as BoxShape, scene.current)
                 sceneObjects.current.push(mesh)
@@ -65,6 +65,11 @@ function Renderer({ shapes, activeId }: RendererProps) {
             }
             if (isSphereShape(resolvedShape)) {
                 const mesh = CreateSphere(resolvedShape as SphereShape, scene.current)
+                sceneObjects.current.push(mesh)
+                if (shape.id === activeId) gizmoManager.current?.attachToMesh(mesh)
+            }
+            if (isCylinderShape(resolvedShape)) {
+                const mesh = CreateCylinder(resolvedShape as CylinderShape, scene.current)
                 sceneObjects.current.push(mesh)
                 if (shape.id === activeId) gizmoManager.current?.attachToMesh(mesh)
             }
@@ -103,6 +108,7 @@ function Renderer({ shapes, activeId }: RendererProps) {
         new BABYLON.Vector3(0, 4, 0),
         scene.current
         )
+        camera.wheelPrecision = 32;
         camera.setTarget(BABYLON.Vector3.Zero())
         camera.attachControl(canvas, true)
         const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene.current)
@@ -111,10 +117,13 @@ function Renderer({ shapes, activeId }: RendererProps) {
         light.specular = new BABYLON.Color3(1, 1, 1);
         light.groundColor = new BABYLON.Color3(.3, .2, .1);
         
+        BABYLON.MeshBuilder.CreateGround("ground", {width: 6, height: 6}, scene.current);
+
         // const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 2, segments: 32}, scene.current);
         // sphere.position.y = 1
-        BABYLON.MeshBuilder.CreateGround("ground", {width: 6, height: 6}, scene.current);
-        
+        // TexturedMaterial('#ff0000ff', '#c0c0c0ff', 100, scene.current).then((texMat) => {
+        //     sphere.material = texMat
+        // })
         
         // DEBUG
             // scene.current.debugLayer.show();

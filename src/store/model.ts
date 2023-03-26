@@ -1,22 +1,16 @@
-import type { Shape, AllShapes } from '../Types'
+import type { AllShapes } from '../Types'
 
 import {
     action,
     Action,
-    computed,
-    Computed,
     thunk,
     Thunk,
     thunkOn,
     ThunkOn,
   } from 'easy-peasy';
   
-  
   export interface ShapesModel {
     shapes: AllShapes[];
-  
-    // completedShapes: Computed<this, Shape[]>;
-    // remainingShapes: Computed<this, Shape[]>;
   
     addShape: Action<this, AllShapes>;
     updateShape: Action<this, AllShapes>;
@@ -28,9 +22,6 @@ import {
   
   const shapesStore: ShapesModel = {
     shapes: [],
-  
-    // completedShapes: computed((state) => state.shapes.filter((shape) => shape.done)),
-    // remainingShapes: computed((state) => state.shapes.filter((shape) => !shape.done)),
   
     addShape: action((state, payload) => {
       state.shapes.push(payload);

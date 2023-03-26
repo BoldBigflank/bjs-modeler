@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import { Button, Grid, Icon } from 'semantic-ui-react'
 import ShapeList from '../components/ShapeList'
 import Renderer from '../components/Renderer'
-import { Shape, BoxShape, SphereShape, AllShapes, RefShape } from '../Types'
+import { Shape, BoxShape, SphereShape, CylinderShape, AllShapes, RefShape } from '../Types'
 import './app.module.scss';
 import ShapeDetail from 'src/components/ShapeDetail'
 import { useStoreState, useStoreActions } from '../store';
+import { SemanticICONS } from 'semantic-ui-react/dist/commonjs/generic'
 
 
 function App() {
@@ -48,6 +49,21 @@ function App() {
       },
       diameter: 1
     } as SphereShape)
+  }
+
+  const addCylinder = () => {
+    const id = getNextId()
+    addShape({
+      id,
+      type: 'cylinder',
+      name: 'cami',
+      position: {
+        x: Math.floor(Math.random() * 1000) / 100 - 5,
+        y: Math.floor(Math.random() * 1000) / 100,
+        z: Math.floor(Math.random() * 1000) / 100 - 5
+      },
+      height: 1
+    } as CylinderShape)
   }
 
   const addRefShape = () => {
@@ -99,6 +115,13 @@ function App() {
                 labelPosition='right'
                 onClick={addRefShape}>
                 Ref
+                <Icon name='plus' />
+              </Button>
+              <Button
+                icon
+                labelPosition='right'
+                onClick={addCylinder}>
+                Cylinder
                 <Icon name='plus' />
               </Button>
             </div>

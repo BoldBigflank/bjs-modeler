@@ -45,7 +45,23 @@ export interface SphereShape extends Shape {
     sideOrientation?: number
 }
 
-export type AllShapes = RefShape | BoxShape | SphereShape
+export interface CylinderShape extends Shape {
+    type: 'cylinder'
+    height?: number
+    diameterTop?: number
+    diameterBottom?: number
+    diameter?: number
+    tessellation?: number
+    subdivisions?: number
+    arc?: number
+    hasRings?: boolean
+    enclose?: boolean
+    sideOrientation?: number
+}
+
+
+
+export type AllShapes = RefShape | BoxShape | SphereShape | CylinderShape
 // export interface Jar {
 //     orientation: number
 //     mesh: InteractiveMesh
@@ -71,3 +87,4 @@ export type AllShapes = RefShape | BoxShape | SphereShape
 export const isRefShape = (shape: Shape): shape is RefShape => shape.type === 'ref'
 export const isBoxShape = (shape: Shape): shape is BoxShape => shape.type === 'box'
 export const isSphereShape = (shape: Shape): shape is SphereShape => shape.type === 'sphere'
+export const isCylinderShape = (shape: Shape): shape is CylinderShape => shape.type === 'cylinder'
