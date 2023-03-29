@@ -37,9 +37,9 @@ function ShapeDetail({ shapeId }: ShapeDetailProps) {
                 value={shape.name}
                 onChange={(e) => onShapeChanged({name: e.target.value})}
             />
-            <Vector3Input vec={position} name="position" onChanged={onShapeChanged} />
-            <Vector3Input vec={displayRotation} name="rotation" onChanged={onShapeChanged} />
-            <Vector3Input vec={displayScaling} name="scaling" onChanged={onShapeChanged} />
+            <Vector3Input key={`pos-${shape.id}`} vec={position} name="position" onChanged={onShapeChanged} />
+            <Vector3Input key={`rot-${shape.id}`} vec={displayRotation} name="rotation" onChanged={onShapeChanged} />
+            <Vector3Input key={`sca-${shape.id}`} vec={displayScaling} name="scaling" onChanged={onShapeChanged} />
             { isRefShape(shape) && 
                 <Input
                     label={{content: 'Ref'}}

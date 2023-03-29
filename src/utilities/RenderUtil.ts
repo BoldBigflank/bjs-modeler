@@ -2,7 +2,7 @@ import { Shape, BoxShape, SphereShape, CylinderShape } from '../Types'
 import * as BABYLON from '@babylonjs/core/Legacy/legacy';
 
 export const TexturedMaterial = async (color1: string, color2: string, scale: number, scene: BABYLON.Scene|undefined) => {
-    const nodeMaterial = await BABYLON.NodeMaterial.ParseFromSnippetAsync("#87Y2T8#1", scene)
+    const nodeMaterial = await BABYLON.NodeMaterial.ParseFromSnippetAsync("#87Y2T8#2", scene)
     const inputBlocks = nodeMaterial.getInputBlocks()
     inputBlocks.forEach((inputBlock) => {
         if (inputBlock.name === 'color1') inputBlock.value = BABYLON.Color4.FromHexString(color1)
@@ -16,7 +16,7 @@ export const TexturedMaterial = async (color1: string, color2: string, scale: nu
 let _tempTexMat: BABYLON.Material|null = null
 const tempTexMat = async (): Promise<BABYLON.Material> => {
     if (_tempTexMat) return _tempTexMat
-    const nodeMaterial = await TexturedMaterial('#ff0000', '#cc0000', 15, undefined)
+    const nodeMaterial = await TexturedMaterial('#ffffff', '#dddddd', 15, undefined)
     _tempTexMat = nodeMaterial
     return _tempTexMat
 }

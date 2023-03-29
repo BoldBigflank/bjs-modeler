@@ -14,7 +14,9 @@ function Renderer({ shapes, activeId }: RendererProps) {
     const engine = useRef<BABYLON.Engine|null>(null)
     const sceneObjects = useRef<BABYLON.Mesh[]>([])
     const gizmoManager = useRef<BABYLON.GizmoManager|null>(null)
-    let tempGizmoValue: number
+    let startPosition: BABYLON.Vector3
+    let startRotation: BABYLON.Vector3
+    let startScaling: BABYLON.Vector3
 
     // Initial
     useEffect(() => {
@@ -31,7 +33,7 @@ function Renderer({ shapes, activeId }: RendererProps) {
     // Update
     useEffect(() => {
         renderShapes()
-    }, [shapes])
+    }, [shapes, activeId])
 
     const resolveRefs = (shape: AllShapes): AllShapes => {
         if (shape.type !== 'ref') return shape
@@ -55,6 +57,7 @@ function Renderer({ shapes, activeId }: RendererProps) {
             o.dispose()
         })
         sceneObjects.current = []
+        if (gizmoManager.current) gizmoManager.current.positionGizmoEnabled = (activeId !== -1)
         // Make new ones
         shapes.forEach((shape, i) => {
             const resolvedShape = resolveRefs(shape)
@@ -80,6 +83,17 @@ function Renderer({ shapes, activeId }: RendererProps) {
         // TODO: Highlighting meshes https://doc.babylonjs.com/features/featuresDeepDive/mesh/highlightLayer
         
     }
+
+    const startDragging = () => {
+        console.log('started')
+        startPosition = gizmoManager.current!.gizmos.positionGizmo!.attachedMesh!.position.clone()
+    }
+
+    const endDragging = (s) => {
+        const diffVec = gizmoManager.current!.gizmos.positionGizmo!.attachedMesh!.position.subtract(startPosition)
+        console.log('ended', diffVec)
+    }
+
     const createScene = () => {
         if (!engine.current) {
             return
@@ -92,14 +106,9 @@ function Renderer({ shapes, activeId }: RendererProps) {
             gizmoManager.current = new BABYLON.GizmoManager(scene.current);
             gizmoManager.current.usePointerToAttachGizmos = false;
             gizmoManager.current.positionGizmoEnabled = true;
-            gizmoManager.current.gizmos.positionGizmo?.xGizmo.dragBehavior.onDragStartObservable.add(() => {
-                console.log('started')
-                tempGizmoValue = gizmoManager.current!.gizmos.positionGizmo!.attachedMesh!.position.x
-            })
-            gizmoManager.current.gizmos.positionGizmo?.xGizmo.dragBehavior.onDragEndObservable.add((s) => {
-                tempGizmoValue = gizmoManager.current!.gizmos.positionGizmo!.attachedMesh!.position.x - tempGizmoValue // B - A
-                console.log('ended', tempGizmoValue)
-            })
+            gizmoManager.current.gizmos.positionGizmo?.onDragStartObservable.add(startDragging)
+            gizmoManager.current.gizmos.positionGizmo?.onDragEndObservable.add(endDragging)
+            
         }
         const camera = new BABYLON.ArcRotateCamera('camera1',
         Math.PI * 3 / 2, // a

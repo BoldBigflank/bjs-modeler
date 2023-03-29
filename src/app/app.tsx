@@ -1,22 +1,30 @@
 import React, { useState } from 'react'
-import { Button, Grid, Icon } from 'semantic-ui-react'
+import { Button, Grid, Icon, TextArea } from 'semantic-ui-react'
 import ShapeList from '../components/ShapeList'
 import Renderer from '../components/Renderer'
-import { Shape, BoxShape, SphereShape, CylinderShape, AllShapes, RefShape } from '../Types'
+import { BoxShape, SphereShape, CylinderShape, RefShape } from '../Types'
 import './app.module.scss';
 import ShapeDetail from 'src/components/ShapeDetail'
 import { useStoreState, useStoreActions } from '../store';
-import { SemanticICONS } from 'semantic-ui-react/dist/commonjs/generic'
 
 
 function App() {
   const { shapes } = useStoreState((state) => state)
-  const [activeId, setActiveId] = useState(-1)
-  const [lastId, setLastId] = useState(0)
+  const [activeId, setActiveId] = useState(0)
+  const [lastId, setLastId] = useState(-1)
+  const [copyState, setCopyState] = useState(0)
   const { addShape } = useStoreActions((actions) => actions);
 
   const getNextId = () => {
-    const nextId = lastId + 1
+    let highestId = lastId
+    if (lastId === -1) {
+      highestId = 0
+      // Initialize
+      shapes.forEach((shape) => {
+        highestId = Math.max(shape.id, highestId)
+      })
+    }
+    const nextId = highestId + 1
     setLastId(nextId)
     return nextId
   }
@@ -81,6 +89,11 @@ function App() {
     } as RefShape)
   }
 
+  const copyShapes = () => {
+    navigator.clipboard.writeText(JSON.stringify(shapes, null, 2))
+
+  }
+
   return (
     <div className="App">
       <Grid columns={3} celled='internally'>
@@ -90,50 +103,52 @@ function App() {
         <Grid.Row>
           <Grid.Column width={4}>
             <div>A toolbar (Save, Load, Export)</div>
-            <div> The list of objects
+            <div>
+              <Button
+                icon
+                onClick={addBox}>
+                <Icon name='cube' />
+              </Button>
+              <Button
+                icon
+                onClick={addSphere}>
+                <Icon name='circle' />
+              </Button>
+              <Button
+                icon
+                onClick={addRefShape}>
+                <Icon name='arrow right' />
+              </Button>
+              <Button
+                icon
+                onClick={addCylinder}>
+                <Icon name='database' />
+              </Button>
               <ShapeList 
                 shapes={shapes}
                 activeId={activeId}
                 setActiveId={setActiveId}
               />
-              <Button
-                icon
-                labelPosition='right'
-                onClick={addBox}>
-                Box
-                <Icon name='plus' />
-              </Button>
-              <Button
-                icon
-                labelPosition='right'
-                onClick={addSphere}>
-                Sphere
-                <Icon name='plus' />
-              </Button>
-              <Button
-                icon
-                labelPosition='right'
-                onClick={addRefShape}>
-                Ref
-                <Icon name='plus' />
-              </Button>
-              <Button
-                icon
-                labelPosition='right'
-                onClick={addCylinder}>
-                Cylinder
-                <Icon name='plus' />
-              </Button>
             </div>
             
-            <div>The JSON</div>
+            <div>
+              <form>
+                <TextArea style={{display:'inline-block'}}value={JSON.stringify(shapes, null, 2)} readOnly/>
+                <Button
+                  icon
+                  onClick={copyShapes}>
+                  <Icon name={'copy'} />
+                </Button>
+              </form>
+              
+            </div>
           </Grid.Column>
           <Grid.Column width={8}>
             <Renderer shapes={shapes} activeId={activeId} />
             <div>View buttons</div>
           </Grid.Column>
           <Grid.Column width={4}>
-            <ShapeDetail shapeId={activeId} />
+            <ShapeDetail key={activeId} shapeId={activeId} />
           </Grid.Column>
         </Grid.Row>
       </Grid>

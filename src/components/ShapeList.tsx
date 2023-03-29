@@ -43,7 +43,7 @@ function ShapeList({ activeId, setActiveId: setActiveId }: ShapeListProps) {
         return (
             <List.Item 
                 active={child.id===activeId}
-                key={index}
+                key={child.id}
                 icon={icon}
                 content={content} 
                 onClick={handleItemClick}
