@@ -4,11 +4,11 @@ import Vector3Input from './Vector3Input'
 import { Shape, RefShape, BoxShape, Vector3, Vector3Name, SphereShape, AllShapes, isBoxShape, isSphereShape, isRefShape, isCylinderShape } from '../Types'
 import { useStoreState, useStoreActions } from '../store';
 
-interface ShapeDetailProps {
+interface ShapeDetailPanelPanelProps {
     shapeId: number | undefined
 }
 
-function ShapeDetail({ shapeId }: ShapeDetailProps) {
+function ShapeDetailPanelPanel({ shapeId }: ShapeDetailPanelProps) {
     const { shapes } = useStoreState((state) => state)
     const { updateShape } = useStoreActions((actions) => actions)
     
@@ -30,7 +30,7 @@ function ShapeDetail({ shapeId }: ShapeDetailProps) {
     }
 
     return (
-        <div>
+        <div className='shapeDetailPanel'>
             <div>id: {shape.id}</div>
             <Input
                 label={{content: 'Name'}}
@@ -90,4 +90,4 @@ function ShapeDetail({ shapeId }: ShapeDetailProps) {
 }
 
 
-export default ShapeDetail
+export default ShapeDetailPanelPanel

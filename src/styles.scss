@@ -12,3 +12,58 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+canvas.renderCanvas {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+.panels {
+    width: fit-content;
+    height: fit-content;
+    .newShapePanel {
+        background-color: #ff00ff;
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        height: auto;
+        .newShape {
+            background: black;
+            color: white;
+        }
+    }
+
+    .shapeList {
+        position: absolute;
+        top: 115px;
+        left: 15px;
+        max-height: calc(100vh - 230px);
+        overflow: hidden auto;
+        .shapeListItem.item {
+            color: white;
+            background: black;
+            border-radius: 3px;
+        }
+    }
+
+    .exportPanel {
+        position: absolute;
+        max-height: 200px;
+        bottom: 15px;
+        left: 15px;
+    }
+
+    .shapeDetailPanel {
+        background-color: #ff00ff;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        max-height: calc(100vh - 30px);
+        overflow:hidden auto;
+    }
+}

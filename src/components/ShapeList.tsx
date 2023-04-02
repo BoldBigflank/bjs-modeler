@@ -16,7 +16,7 @@ const iconForType: Record<string,string> = {
     cylinder: 'database'
 }
 
-function ShapeList({ activeId, setActiveId: setActiveId }: ShapeListProps) {
+function ShapeList({ activeId, setActiveId }: ShapeListProps) {
     const { shapes } = useStoreState((state) => state)
     const { removeShape } = useStoreActions((actions) => actions);
 
@@ -26,39 +26,32 @@ function ShapeList({ activeId, setActiveId: setActiveId }: ShapeListProps) {
     }
 
     const items = shapes.map((child, index) => {
-        let content: ReactElement|null = null
         const icon = iconForType[child.type] || 'question'
-        content = (
-            <div>
-                {child.id}: {child.type} - {child.name}
-                <Button compact floated='right' icon onClick={() => onDeleteClick(child)}>
-                    <Icon name="trash" />
-                </Button>
-            </div>
-        )
         const handleItemClick = () => {
             if (activeId === child.id) setActiveId(-1)
             else setActiveId(child.id)
+            console.log('setting active Id', child.id)
         }
         return (
-            <List.Item 
-                active={child.id===activeId}
+            <Button
+                fluid
+                className={`shapeListItem ${child.id===activeId ? 'active' : ''}`}
                 key={child.id}
-                icon={icon}
-                content={content} 
                 onClick={handleItemClick}
-            />
+            >
+                <Icon name={icon} />
+                {child.id}: {child.type} - {child.name}
+                <Button compact floated='right' icon onClick={() => onDeleteClick(child)}>
+                    <Icon size='small' fitted name="trash" />
+                </Button>
+            </Button>
         )
     })
 
     return (
-        <List
-            items={items}
-            exclusive={false}
-            styled
-            fluid
-            selection
-        />
+        <div className="shapeList">
+            {items}
+        </div>
     )
 }
 

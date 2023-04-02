@@ -31,11 +31,12 @@ import {
         state.shapes = updatedShapes
     }),
     updateShape: action((state, newShape) => {
-        const updatedShapes = state.shapes.map((shape) => {
-            if (shape.id !== newShape.id) return shape
-            return newShape
-        })
-        state.shapes = updatedShapes
+      const updatedShapes = state.shapes.map((shape) => {
+        if (shape.id !== newShape.id) return shape
+        return newShape
+      })
+      state.shapes = updatedShapes
+      console.log('updateShape')
     }),
   
     onShapesChanged: thunkOn(

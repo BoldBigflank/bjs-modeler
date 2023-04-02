@@ -6,9 +6,10 @@ import { AllShapes, BoxShape, SphereShape, CylinderShape, RefShape, isRefShape, 
 interface RendererProps {
     shapes: AllShapes[]
     activeId?: number
+    updateActiveShape: (name: 'position'|'scaling'|'rotation', diff: BABYLON.Vector3) => void
 }
 
-function Renderer({ shapes, activeId }: RendererProps) {
+function Renderer({ shapes, activeId, updateActiveShape }: RendererProps) {
     const canvasRef = useRef(null)
     const scene = useRef<BABYLON.Scene|null>(null)
     const engine = useRef<BABYLON.Engine|null>(null)
@@ -27,6 +28,10 @@ function Renderer({ shapes, activeId }: RendererProps) {
         engine.current.runRenderLoop(function () {
             if (!scene.current) return
             scene.current.render();
+        })
+
+        window.addEventListener('resize', () => {
+            engine.current?.resize()
         })
     }, [])
 
@@ -89,9 +94,10 @@ function Renderer({ shapes, activeId }: RendererProps) {
         startPosition = gizmoManager.current!.gizmos.positionGizmo!.attachedMesh!.position.clone()
     }
 
-    const endDragging = (s) => {
+    const endDragging = () => {
         const diffVec = gizmoManager.current!.gizmos.positionGizmo!.attachedMesh!.position.subtract(startPosition)
         console.log('ended', diffVec)
+        updateActiveShape('position', diffVec)
     }
 
     const createScene = () => {
@@ -107,16 +113,15 @@ function Renderer({ shapes, activeId }: RendererProps) {
             gizmoManager.current.usePointerToAttachGizmos = false;
             gizmoManager.current.positionGizmoEnabled = true;
             gizmoManager.current.gizmos.positionGizmo?.onDragStartObservable.add(startDragging)
-            gizmoManager.current.gizmos.positionGizmo?.onDragEndObservable.add(endDragging)
+            gizmoManager.current.gizmos.positionGizmo?.onDragEndObservable.add(endDragging) // Is this why the initial activeId value is set?
             
         }
-        const camera = new BABYLON.ArcRotateCamera('camera1',
+        const camera = new BABYLON.ArcRotateCamera("camera1", 
         Math.PI * 3 / 2, // a
         Math.PI / 4, // b
         24,
-        new BABYLON.Vector3(0, 4, 0),
-        scene.current
-        )
+        new BABYLON.Vector3(0, 6, 0), scene.current);
+        camera.upperBetaLimit = Math.PI / 2;
         camera.wheelPrecision = 32;
         camera.setTarget(BABYLON.Vector3.Zero())
         camera.attachControl(canvas, true)
@@ -142,8 +147,6 @@ function Renderer({ shapes, activeId }: RendererProps) {
             id="renderCanvas"
             className="renderCanvas"
             ref={canvasRef}
-            width={480}
-            height={480}
         />
     )
 }
