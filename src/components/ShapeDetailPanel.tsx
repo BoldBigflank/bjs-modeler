@@ -13,7 +13,11 @@ function ShapeDetailPanel
 ({ shapeId }: ShapeDetailPanelProps) {
     const { shapes } = useStoreState((state) => state)
     const { updateShape } = useStoreActions((actions) => actions)
-    
+
+    useEffect(() => {
+        console.log('ShapeDetailPanel - shapes updated')
+    }, [shapes])
+
     const shape = shapes.find((shape) => shape.id === shapeId)
     if (!shape) return (<div>{shapeId}</div>)
     const { position, rotation, scaling, name } = shape

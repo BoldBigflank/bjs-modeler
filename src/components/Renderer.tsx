@@ -6,10 +6,9 @@ import { useStoreState, useStoreActions } from 'src/store';
 
 interface RendererProps {
     activeId: number
-    updateActiveShape: (name: 'position'|'scaling'|'rotation', diff: BABYLON.Vector3) => void
 }
 
-function Renderer({ activeId, updateActiveShape }: RendererProps) {
+function Renderer({ activeId }: RendererProps) {
     const { shapes } = useStoreState((state) => state)
     const { updateShape } = useStoreActions((actions) => actions);
     const canvasRef = useRef(null)
@@ -17,8 +16,6 @@ function Renderer({ activeId, updateActiveShape }: RendererProps) {
     const engine = useRef<BABYLON.Engine|null>(null)
     const sceneObjects = useRef<BABYLON.Mesh[]>([])
     const gizmoManager = useRef<BABYLON.GizmoManager|null>(null)
-    let startPosition: BABYLON.Vector3
-    const [positionGizmoStartObservable, setPositionGizmoStartObservable] = useState<BABYLON.Nullable<BABYLON.Observer<unknown>> | undefined>(null)
     const [positionGizmoEndObservable, setPositionGizmoEndObservable] = useState<BABYLON.Nullable<BABYLON.Observer<unknown>> | undefined>(null)
     let startRotation: BABYLON.Vector3
     let startScaling: BABYLON.Vector3
@@ -65,16 +62,9 @@ function Renderer({ activeId, updateActiveShape }: RendererProps) {
 
     const listenToActiveShape = () => {
         if (!gizmoManager.current) return
-        if (positionGizmoStartObservable) gizmoManager.current.gizmos.positionGizmo?.onDragStartObservable.remove(positionGizmoStartObservable)
         if (positionGizmoEndObservable) gizmoManager.current.gizmos.positionGizmo?.onDragEndObservable.remove(positionGizmoEndObservable)
 
-        setPositionGizmoStartObservable(gizmoManager.current.gizmos.positionGizmo?.onDragStartObservable.add(startDragging))
         setPositionGizmoEndObservable(gizmoManager.current.gizmos.positionGizmo?.onDragEndObservable.add(endDragging))
-        // if (activeId !== -1) {
-        // } else {
-        //     setPositionGizmoEndObservable(null)
-        //     setPositionGizmoEndObservable(null)
-        // }
     }
 
     const renderShapes = () => {
@@ -111,28 +101,21 @@ function Renderer({ activeId, updateActiveShape }: RendererProps) {
 
     }
 
-    const startDragging = () => {
-        startPosition = gizmoManager.current!.gizmos.positionGizmo!.attachedMesh!.position.clone()
-    }
-
     const endDragging = () => {
-        console.log('END DRAGGING', activeId)
-        const name = 'position'
-        const diff = gizmoManager.current!.gizmos.positionGizmo!.attachedMesh!.position.subtract(startPosition)
-        // updateActiveShape(name, diff)
+        if (activeId < 0) return // There's a rogue listener that keeps showing up
+        const endPosition = gizmoManager.current!.gizmos.positionGizmo!.attachedMesh!.position.clone()
         const activeShape = shapes.find((shape) => shape.id === activeId)
         if (!activeShape) console.error('endDragging - No active shape found', activeId)
         if (!activeShape) return
-        const vec = activeShape[name]
-        if (!vec) console.error('endDragging - No vec found:', name)
-        if (!vec) return
-        activeShape[name] = {
-            x: Math.round(vec.x + diff.x),
-            y: Math.round(vec.y + diff.y),
-            z: Math.round(vec.z + diff.z)
-        }
         console.log('endDragging - successful', activeShape)
-        updateShape(activeShape)
+        updateShape({
+            ...activeShape,
+            position: {
+                x: Math.round(endPosition.x),
+                y: Math.round(endPosition.y),
+                z: Math.round(endPosition.z)
+            }
+        })
     }
 
     const createScene = () => {

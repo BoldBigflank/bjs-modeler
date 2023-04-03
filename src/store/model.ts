@@ -33,7 +33,10 @@ import {
     updateShape: action((state, newShape) => {
       const updatedShapes = state.shapes.map((shape) => {
         if (shape.id !== newShape.id) return shape
-        return newShape
+        return {
+          ...newShape,
+          position: {...newShape.position}
+        }
       })
       state.shapes = updatedShapes
       console.log('updateShape')

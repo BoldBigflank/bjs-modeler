@@ -75,25 +75,9 @@ function App() {
     setActiveId(id)
   }
 
-  const updateActiveShape = (name: 'position'|'scaling'|'rotation', diff: Vector3) => {
-    const activeShape = shapes.find((shape) => shape.id === activeId)
-    if (!activeShape) console.error('No active shape found', activeId)
-    if (!activeShape) return
-    const vec = activeShape[name]
-    if (!vec) console.error('No vec found:', name)
-    if (!vec) return
-    activeShape[name] = {
-      x: Math.round(vec.x + diff.x),
-      y: Math.round(vec.y + diff.y),
-      z: Math.round(vec.z + diff.z)
-    }
-    console.log('updateActiveShape successful', activeShape)
-    updateShape(activeShape)
-  }
-
   return (
     <div className="App">
-      <Renderer shapes={shapes} activeId={activeId} updateActiveShape={updateActiveShape} />
+      <Renderer shapes={shapes} activeId={activeId} />
       <div className="panels">
         <NewShapePanel newShape={newShape} />
         <ShapeList 

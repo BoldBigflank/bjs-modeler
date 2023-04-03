@@ -13,6 +13,13 @@ function Vector3Input({vec, name, onChanged}: Vector3InputProps) {
     const [y, setY] = useState<string>(`${vec.y}`)
     const [z, setZ] = useState<string>(`${vec.z}`)
     
+    useEffect(() => {
+        console.log('Vector3Input useEffect vec updated')
+        setX(`${vec.x}`)    
+        setY(`${vec.y}`)
+        setZ(`${vec.z}`)
+
+    }, [vec])
     const handleOnBlur = () => {
         if (!isNaN(parseFloat(x))) setX(`${vec.x}`)
         if (!isNaN(parseFloat(y))) setY(`${vec.y}`)
