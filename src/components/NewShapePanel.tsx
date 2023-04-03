@@ -1,4 +1,4 @@
-import { Button, Icon } from "semantic-ui-react"
+import { Icon } from "semantic-ui-react"
 
 type NewShapeProps = {
     newShape: (name: string) => void
@@ -6,35 +6,26 @@ type NewShapeProps = {
 
 const NewShapePanel = ({newShape}: NewShapeProps) => {
     return (<div className='newShapePanel'>
-        <Button
-          className='newShape'
-          icon
-          primary
-          color="pink"
+        <button
+          className='newShape panelButton'
           onClick={() => newShape('box')}>
           <Icon name='cube' />
-        </Button>
-        <Button
-          className='newShape'
-          icon
-          color="pink"
+        </button>
+        <button
+          className='newShape panelButton'
           onClick={() => newShape('sphere')}>
           <Icon name='circle' />
-        </Button>
-        <Button
-          className='newShape'
-          icon
-          color="pink"
+        </button>
+        <button
+          className='newShape panelButton'
           onClick={() => newShape('ref')}>
           <Icon name='arrow right' />
-        </Button>
-        <Button
-          className='newShape'
-          icon
-          color="pink"
+        </button>
+        <button
+          className='newShape panelButton'
           onClick={() => newShape('cylinder')}>
           <Icon name='database' />
-        </Button>
+        </button>
       </div>)
 }
 

@@ -76,19 +76,18 @@ function App() {
   }
 
   const updateActiveShape = (name: 'position'|'scaling'|'rotation', diff: Vector3) => {
-    console.log('updateActiveShape', activeId) // WHY IS THIS ALWAYS THE INITIAL VALUE
-    console.log('shapes', shapes)
     const activeShape = shapes.find((shape) => shape.id === activeId)
-    console.log('active shape', activeShape)
+    if (!activeShape) console.error('No active shape found', activeId)
     if (!activeShape) return
     const vec = activeShape[name]
+    if (!vec) console.error('No vec found:', name)
     if (!vec) return
     activeShape[name] = {
       x: Math.round(vec.x + diff.x),
       y: Math.round(vec.y + diff.y),
       z: Math.round(vec.z + diff.z)
     }
-    console.log('updating shape', activeShape)
+    console.log('updateActiveShape successful', activeShape)
     updateShape(activeShape)
   }
 

@@ -13,11 +13,11 @@ const ExportPanel = () => {
         <div className='exportPanel'>
         <form>
           <TextArea style={{display:'inline-block'}}value={JSON.stringify(shapes, null, 2)} readOnly/>
-          <Button
-            icon
+          <button
+            className="panelButton"
             onClick={copyShapes}>
             <Icon name={'copy'} />
-          </Button>
+          </button>
         </form>
         
       </div>

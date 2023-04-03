@@ -4,11 +4,13 @@ import Vector3Input from './Vector3Input'
 import { Shape, RefShape, BoxShape, Vector3, Vector3Name, SphereShape, AllShapes, isBoxShape, isSphereShape, isRefShape, isCylinderShape } from '../Types'
 import { useStoreState, useStoreActions } from '../store';
 
-interface ShapeDetailPanelPanelProps {
+interface ShapeDetailPanelProps {
     shapeId: number | undefined
 }
 
-function ShapeDetailPanelPanel({ shapeId }: ShapeDetailPanelProps) {
+function ShapeDetailPanel
+
+({ shapeId }: ShapeDetailPanelProps) {
     const { shapes } = useStoreState((state) => state)
     const { updateShape } = useStoreActions((actions) => actions)
     
@@ -90,4 +92,5 @@ function ShapeDetailPanelPanel({ shapeId }: ShapeDetailPanelProps) {
 }
 
 
-export default ShapeDetailPanelPanel
+export default ShapeDetailPanel
+

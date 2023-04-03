@@ -21,6 +21,7 @@ function ShapeList({ activeId, setActiveId }: ShapeListProps) {
     const { removeShape } = useStoreActions((actions) => actions);
 
     const onDeleteClick = (child: AllShapes) => {
+        // eslint-disable-next-line no-restricted-globals
         const confirmed = confirm(`Are you sure you want to delete ${child.name}?`)
         if (confirmed) removeShape(child)
     }
