@@ -3,6 +3,7 @@ import * as BABYLON from '@babylonjs/core/Legacy/legacy';
 import { CreateBox, CreateSphere, CreateCylinder, TexturedMaterial } from '../utilities/RenderUtil'
 import { AllShapes, BoxShape, SphereShape, CylinderShape, RefShape, isRefShape, isBoxShape, isSphereShape, isCylinderShape } from '../Types'
 import { useStoreState, useStoreActions } from 'src/store';
+import { BlockList } from 'net';
 
 interface RendererProps {
     activeId: number
@@ -146,8 +147,21 @@ function Renderer({ activeId }: RendererProps) {
         light.specular = new BABYLON.Color3(1, 1, 1);
         light.groundColor = new BABYLON.Color3(.3, .2, .1);
         
-        const ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 6, height: 6}, scene.current);
+        const ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 8, height: 8}, scene.current);
         ground.position.y = -0.01;
+
+        // Dot grid
+        const dot = new BABYLON.MeshBuilder.CreateSphere('dot', {diameter: 0.04}, scene.current)
+        let dotArray = []
+        for (let z = -4; z <= 4; z++) {
+            for (let y = 0; y <= 8; y++) {
+                for (let x = -4; x <= 4; x++) {
+                    let matrix = BABYLON.Matrix.Translation(x, y, z)
+                    dotArray.push(matrix)
+                }
+            }
+        }
+        dot.thinInstanceAdd(dotArray)
 
         // const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 2, segments: 32}, scene.current);
         // sphere.position.y = 1
