@@ -39,7 +39,6 @@ import {
         }
       })
       state.shapes = updatedShapes
-      console.log('updateShape')
     }),
   
     onShapesChanged: thunkOn(

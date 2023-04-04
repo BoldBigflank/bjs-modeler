@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import * as BABYLON from '@babylonjs/core/Legacy/legacy';
-import { CreateBox, CreateSphere, CreateCylinder, TexturedMaterial } from '../utilities/RenderUtil'
-import { AllShapes, BoxShape, SphereShape, CylinderShape, RefShape, isRefShape, isBoxShape, isSphereShape, isCylinderShape } from '../Types'
+import { CreateBox, CreateSphere, CreateCylinder } from '../utilities/RenderUtil'
+import { AllShapes, BoxShape, SphereShape, CylinderShape, isRefShape, isBoxShape, isSphereShape, isCylinderShape } from '../Types'
 import { useStoreState, useStoreActions } from 'src/store';
-import { BlockList } from 'net';
 
 interface RendererProps {
     activeId: number
@@ -151,12 +150,13 @@ function Renderer({ activeId }: RendererProps) {
         ground.position.y = -0.01;
 
         // Dot grid
-        const dot = new BABYLON.MeshBuilder.CreateSphere('dot', {diameter: 0.04}, scene.current)
-        let dotArray = []
+        const dot = BABYLON.MeshBuilder.CreateSphere('dot', {diameter: 0.04}, scene.current)
+        // dot.material.diffuseColor = BABYLON.Color3.Black()
+        const dotArray: BABYLON.Matrix[] = []
         for (let z = -4; z <= 4; z++) {
             for (let y = 0; y <= 8; y++) {
                 for (let x = -4; x <= 4; x++) {
-                    let matrix = BABYLON.Matrix.Translation(x, y, z)
+                    const matrix = BABYLON.Matrix.Translation(x, y, z)
                     dotArray.push(matrix)
                 }
             }

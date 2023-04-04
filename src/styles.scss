@@ -8,6 +8,10 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+label {
+    color: white;
+}
+
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -23,13 +27,15 @@ canvas.renderCanvas {
     height: 100vh;
 }
 
+
+
 button.panelButton {
     width: 48px;
     height: 48px;
     margin-right: 5px;
     border: 0px solid black;
     border-radius: 5px;
-    background-color: rgba(255, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     color: white;
     transition: transform 0.1s;
     &:hover {
@@ -57,10 +63,25 @@ button.panelButton {
         left: 15px;
         max-height: calc(100vh - 230px);
         overflow: hidden auto;
-        .shapeListItem.item {
+        .shapeListItem {
+            display:block;
             color: white;
-            background: black;
+            background: rgba(0,0,0,0.5);
+            padding: 3px;
+            border: 1px solid black;
+            margin-bottom: 3px;
             border-radius: 3px;
+            min-width: 200px;
+            text-align: left;
+            &.active {
+                background: rgba(255, 0, 0, 0.5);
+            }
+            .delete {
+                float:right;
+            }
+            &:hover {
+                border:1px solid red;
+            }
         }
     }
 
@@ -69,6 +90,14 @@ button.panelButton {
         max-height: 200px;
         bottom: 15px;
         left: 15px;
+        .copyShapes {
+            transition: background-color 0.5s;
+            &.confirmed {
+                transition: background-color 0s;
+                background-color: rgba(0,255,0,0.5);
+            }
+
+        }
     }
 
     .shapeDetailPanel {
@@ -81,5 +110,20 @@ button.panelButton {
         right: 15px;
         max-height: calc(100vh - 30px);
         overflow:hidden auto;
+        .ui.form {
+            .ui.label {
+                color: white;
+                background-color: transparent;
+            }
+            .inline.fields {
+                .field {
+                    label {
+                        color: white;
+                    }
+                }
+        
+            }
+        }
+        
     }
 }

@@ -1,7 +1,6 @@
-import React, { useState, useEffect, ReactElement } from 'react'
 import { Input } from 'semantic-ui-react'
 import Vector3Input from './Vector3Input'
-import { Shape, RefShape, BoxShape, Vector3, Vector3Name, SphereShape, AllShapes, isBoxShape, isSphereShape, isRefShape, isCylinderShape } from '../Types'
+import { AllShapes, isBoxShape, isSphereShape, isRefShape, isCylinderShape } from '../Types'
 import { useStoreState, useStoreActions } from '../store';
 
 interface ShapeDetailPanelProps {
@@ -13,10 +12,6 @@ function ShapeDetailPanel
 ({ shapeId }: ShapeDetailPanelProps) {
     const { shapes } = useStoreState((state) => state)
     const { updateShape } = useStoreActions((actions) => actions)
-
-    useEffect(() => {
-        console.log('ShapeDetailPanel - shapes updated')
-    }, [shapes])
 
     const shape = shapes.find((shape) => shape.id === shapeId)
     if (!shape) return (<div>{shapeId}</div>)

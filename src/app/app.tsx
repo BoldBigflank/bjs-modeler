@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { Grid} from 'semantic-ui-react'
+import React, { useState, KeyboardEvent } from 'react'
 import ShapeList from '../components/ShapeList'
 import Renderer from '../components/Renderer'
 import { BoxShape, SphereShape, CylinderShape, RefShape } from '../Types'
 import './app.module.scss';
 import ShapeDetailPanel from 'src/components/ShapeDetailPanel'
 import { useStoreState, useStoreActions } from '../store';
-import { Vector3 } from '@babylonjs/core'
 import NewShapePanel from 'src/components/NewShapePanel'
 import ExportPanel from 'src/components/ExportPanel'
 
@@ -75,8 +73,68 @@ function App() {
     setActiveId(id)
   }
 
+const changeActiveId = (n: number) => {
+  const activeIndex = shapes.findIndex((shape) => shape.id === activeId)
+  const nextActiveIndex = (activeIndex + n + shapes.length) % shapes.length
+  setActiveId(shapes[nextActiveIndex].id)
+}
+
+const moveActiveShape = (x: number, y: number, z: number) => {
+  if (activeId < 0) return
+  const activeShape = shapes.find((shape) => shape.id === activeId)
+  if (!activeShape) return
+  updateShape({
+    ...activeShape,
+    position: {
+      x: activeShape.position.x + x,
+      y: activeShape.position.y + y,
+      z: activeShape.position.z + z
+    }
+  })
+}
+
+const handleKeyDown = (event: KeyboardEvent) => {
+  if (event.currentTarget.tagName === 'INPUT') return
+  switch (event.key) {
+    case 'q':
+    case 'Q':
+      changeActiveId(-1)
+      break
+    case 'w':
+    case 'W':
+      moveActiveShape(0, 0, 1)
+      break
+    case 'e':
+    case 'E':
+      changeActiveId(1)
+      break
+      case 'a':
+    case 'A':
+      moveActiveShape(-1, 0, 0)
+      break
+    case 's':
+    case 'S':
+      moveActiveShape(0, 0, -1)
+      break
+    case 'd':
+      case 'D':
+      moveActiveShape(1, 0, 0)
+      break
+    case 'z':
+    case 'Z':
+      moveActiveShape(0, -1, 0)
+      break;
+    case 'x':
+    case 'X':
+      moveActiveShape(0, 1, 0)
+      break
+    default:
+      break;
+  }
+}
+
   return (
-    <div className="App">
+    <div className="App" onKeyDown={handleKeyDown}>
       <Renderer shapes={shapes} activeId={activeId} />
       <div className="panels">
         <NewShapePanel newShape={newShape} />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Form, Input, Accordion, Label } from 'semantic-ui-react'
+import { Form, Label } from 'semantic-ui-react'
 import { AllShapes, Vector3, Vector3Name } from '../Types'
 
 interface Vector3InputProps {
@@ -14,7 +14,6 @@ function Vector3Input({vec, name, onChanged}: Vector3InputProps) {
     const [z, setZ] = useState<string>(`${vec.z}`)
     
     useEffect(() => {
-        console.log('Vector3Input useEffect vec updated')
         setX(`${vec.x}`)    
         setY(`${vec.y}`)
         setZ(`${vec.z}`)

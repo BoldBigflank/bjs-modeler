@@ -34,18 +34,17 @@ function ShapeList({ activeId, setActiveId }: ShapeListProps) {
             console.log('setting active Id', child.id)
         }
         return (
-            <Button
-                fluid
+            <button
                 className={`shapeListItem ${child.id===activeId ? 'active' : ''}`}
                 key={child.id}
                 onClick={handleItemClick}
             >
                 <Icon name={icon} />
                 {child.id}: {child.type} - {child.name}
-                <Button compact floated='right' icon onClick={() => onDeleteClick(child)}>
+                <button className='delete' onClick={() => onDeleteClick(child)}>
                     <Icon size='small' fitted name="trash" />
-                </Button>
-            </Button>
+                </button>
+            </button>
         )
     })
 
