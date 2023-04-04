@@ -32,15 +32,22 @@ function App() {
   const newShape = (name: string) => {
     console.log('newShape', name)
     const id = getNextId()
+    let position = {
+      x: Math.floor(Math.random() * 1000) / 100 - 5,
+      y: Math.floor(Math.random() * 1000) / 100,
+      z: Math.floor(Math.random() * 1000) / 100 - 5
+    }
+    if (activeId) {
+      const activeShape = shapes.find((shape) => shape.id === activeId)
+      position = {
+        ...activeShape!.position
+      }
+    }
     const baseShape = {
       id,
       type: name,
       name: name,
-      position: {
-        x: Math.floor(Math.random() * 1000) / 100 - 5,
-        y: Math.floor(Math.random() * 1000) / 100,
-        z: Math.floor(Math.random() * 1000) / 100 - 5
-      }
+      position
     }
     switch (name) {
       case 'box':
