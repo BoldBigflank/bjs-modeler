@@ -37,7 +37,7 @@ function App() {
       y: Math.floor(Math.random() * 1000) / 100,
       z: Math.floor(Math.random() * 1000) / 100 - 5
     }
-    if (activeId) {
+    if (activeId >= 0) {
       const activeShape = shapes.find((shape) => shape.id === activeId)
       position = {
         ...activeShape!.position
